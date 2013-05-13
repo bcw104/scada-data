@@ -1,5 +1,7 @@
 package com.ht.scada.data.service;
 
+import java.util.Map;
+
 /**
  * 实现对RTU的遥控遥调操作
  * @author 薄成文
@@ -30,11 +32,14 @@ public interface RTUService {
 	boolean yk(String code, String varName, boolean status) throws Exception;
 	
 	/**
+     * 遥调操作
 	 * @param code
 	 * @param varName
 	 * @param value
 	 * @return
 	 * @throws Exception 
 	 */
-	boolean yt(String code, String varName, double value) throws Exception;
+	boolean yt(String code, String varName, int value) throws Exception;
+
+    boolean yt(String code, Map<String, Float> value) throws Exception;
 }

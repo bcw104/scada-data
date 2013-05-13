@@ -6,6 +6,7 @@
 
     <groupId>com.ht.scada</groupId>
     <artifactId>scada-data</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
@@ -20,6 +21,9 @@
             </plugin>
         </plugins>
     </build>
+    <modules>
+        <module>../scada-data-impl</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -52,7 +56,11 @@
             <artifactId>scada-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.2.4</version>
+        </dependency>
     </dependencies>
 
 

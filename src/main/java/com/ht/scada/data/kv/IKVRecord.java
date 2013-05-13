@@ -1,4 +1,4 @@
-package com.ht.scada.data.data;
+package com.ht.scada.data.kv;
 
 import oracle.kv.Key;
 import oracle.kv.Value;

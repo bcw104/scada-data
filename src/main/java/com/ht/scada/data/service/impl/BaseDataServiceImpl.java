@@ -1,12 +1,10 @@
 package com.ht.scada.data.service.impl;
 
+import com.ht.scada.data.service.BaseDataService;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import redis.clients.jedis.Jedis;
-
-import com.ht.scada.data.service.BaseDataService;
 
 public class BaseDataServiceImpl implements BaseDataService {
 	

@@ -1,28 +1,16 @@
 package com.ht.scada.data.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
-import oracle.kv.Key;
-import redis.clients.jedis.BinaryJedis;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisShardInfo;
-import redis.clients.jedis.Response;
-import redis.clients.jedis.ShardedJedis;
-import redis.clients.jedis.ShardedJedisPipeline;
-import redis.clients.jedis.ShardedJedisPool;
+import com.ht.scada.data.service.RealtimeDataService;
+import redis.clients.jedis.*;
 import redis.clients.util.Hashing;
 import redis.clients.util.Sharded;
 
-import com.ht.scada.data.service.RealtimeDataService;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author 薄成文
@@ -60,204 +48,74 @@ public class RealtimeDataServiceImpl implements RealtimeDataService {
 
 		Sharded.DEFAULT_KEY_TAG_PATTERN);
 	}
-	
-	public double[] getBatchNumValue(String code, String[] name) {
-		ShardedJedis jedis = pool.getResource();
-		double[] value = new double[name.length];
-		try {
-			ShardedJedisPipeline pipeline = jedis.pipelined();
-			Response<String>[] response = new Response[name.length];
-			for (int i = 0; i < name.length; i++) {
-				response[i] = pipeline.get(Key.createKey(Arrays.asList(code, name[i])).toString());
-			}
-			pipeline.sync();
-			
-			for (int i = 0; i < value.length; i++) {
-				Response<String> resp = response[i];
-				String s = resp.get();
-				if ( s != null) {
-					value[i] = Double.longBitsToDouble(Long.parseLong(s, 16));
-				}
-			}
-		} finally {
-		  pool.returnResource(jedis);
-		}
-		return value;
-	}
-	
-	public double getNumValue(String code, String name) {
-		ShardedJedis jedis = pool.getResource();
-		double value = 0;
-		try {
-			String readBuffer = jedis.get(Key.createKey(Arrays.asList(code, name)).toString());
-			if (readBuffer != null) {
-				//value = byteArrayToDouble(readBuffer);
-				value = Double.longBitsToDouble(Long.parseLong(readBuffer, 16));
-			}
-		} finally {
-		  pool.returnResource(jedis);
-		}
-		return value;
-	}
-	
-	public void putBatchValue(String code, String[] name, String[] value) {
-		ShardedJedis jedis = pool.getResource();
-		if (name.length != value.length) {
-			throw new IllegalArgumentException("name数量与value数量不匹配");
-		}
-		try {
-			ShardedJedisPipeline pipeline = jedis.pipelined();
-			for (int i = 0; i < name.length; i++) {
-				pipeline.set(Key.createKey(Arrays.asList(code, name[i])).toString(), value[i]);
-			}
-			pipeline.sync();
-		} finally {
-		  pool.returnResource(jedis);
-		}
-	}
-	
-	@Override
-	public void putBatchValue(Map<String, String> kvMap) {
-		ShardedJedis jedis = pool.getResource();
-		try {
-			ShardedJedisPipeline pipeline = jedis.pipelined();
-			int i = 0;
-			for (Entry<String, String> entry : kvMap.entrySet()) {
-				pipeline.set(entry.getKey(), entry.getValue());
-				if (i++ % 100 == 0) {
-					pipeline.sync();
-				}
-			}
-			pipeline.sync();
-		} finally {
-		  pool.returnResource(jedis);
-		}
-	}
 
-	public void putBatchValue(String code, String[] name, double[] value) {
-		ShardedJedis jedis = pool.getResource();
-		if (name.length != value.length) {
-			throw new IllegalArgumentException("name数量与value数量不匹配");
-		}
-		try {
-			ShardedJedisPipeline pipeline = jedis.pipelined();
-			for (int i = 0; i < name.length; i++) {
-				pipeline.set(Key.createKey(Arrays.asList(code, name[i])).toString(), Long.toHexString(Double.doubleToLongBits(value[i])));
-			}
-			pipeline.sync();
-		} finally {
-		  pool.returnResource(jedis);
-		}
-	}
-	
-	public void putValue(String code, String name, double value) {
-		ShardedJedis jedis = pool.getResource();
-		try {
-			jedis.set(Key.createKey(Arrays.asList(code, name)).toString(), Long.toHexString(Double.doubleToLongBits(value)));
-		} finally {
-		  pool.returnResource(jedis);
-		}
-	}
-	
-	/**
-	 * @param readBuffer
-	 * @return
-	 */
-	private double byteArrayToDouble(byte[] readBuffer) {
-		double value;
-		long v = (((long)readBuffer[0] << 56) +
-		    ((long)(readBuffer[1] & 255) << 48) +
-		    ((long)(readBuffer[2] & 255) << 40) +
-		    ((long)(readBuffer[3] & 255) << 32) +
-		    ((long)(readBuffer[4] & 255) << 24) +
-		    ((readBuffer[5] & 255) << 16) +
-		    ((readBuffer[6] & 255) <<  8) +
-		    ((readBuffer[7] & 255) <<  0));
-		value = Double.longBitsToDouble(v);
-		return value;
-	}
+    @Override
+    public String[] getBatchValue(String code, String[] name) {
+        ShardedJedis jedis = pool.getResource();
 
-	/**
-	 * @param value
-	 * @return
-	 */
-	private byte[] doubleToByteArray(double value) {
-		byte[] writeBuffer = new byte[8];
-		long v = Double.doubleToLongBits(value);
-		writeBuffer[0] = (byte)(v >>> 56);
-		writeBuffer[1] = (byte)(v >>> 48);
-		writeBuffer[2] = (byte)(v >>> 40);
-		writeBuffer[3] = (byte)(v >>> 32);
-		writeBuffer[4] = (byte)(v >>> 24);
-		writeBuffer[5] = (byte)(v >>> 16);
-		writeBuffer[6] = (byte)(v >>>  8);
-		writeBuffer[7] = (byte)(v >>>  0);
-		return writeBuffer;
-	}
-	
-	public boolean[] getBatchBoolValue(String code, String[] name) {
-		ShardedJedis jedis = pool.getResource();
-		
-		boolean[] value = new boolean[name.length];
-		try {
-			ShardedJedisPipeline pipeline = jedis.pipelined();
-			Response<String>[] response = new Response[name.length];
-			for (int i = 0; i < name.length; i++) {
-				response[i] = pipeline.get(Key.createKey(Arrays.asList(code, name[i])).toString());
-			}
-			pipeline.sync();
-			
-			for (int i = 0; i < value.length; i++) {
-				Response<String> resp = response[i];
-				String s = resp.get();
-				if ( s != null) {
-					value[i] = Boolean.parseBoolean(s);
-				}
-			}
-		} finally {
-		  pool.returnResource(jedis);
-		}
-		return value;
-	}
-	
-	public boolean getBoolValue(String code, String name) {
-		ShardedJedis jedis = pool.getResource();
-		boolean value = false;
-		try {
-			String v = jedis.get(Key.createKey(Arrays.asList(code, name)).toString());
-			value = Boolean.parseBoolean(v);
-		} finally {
-		  pool.returnResource(jedis);
-		}
-		return value;
-	}
-	
-	public void putBatchValue(String code, String[] name, boolean[] value) {
-		ShardedJedis jedis = pool.getResource();
-		if (name.length != value.length) {
-			throw new IllegalArgumentException("name数量与value数量不匹配");
-		}
-		try {
-			ShardedJedisPipeline pipeline = jedis.pipelined();
-			for (int i = 0; i < name.length; i++) {
-				pipeline.set(Key.createKey(Arrays.asList(code, name[i])).toString(), Boolean.toString(value[i]));
-			}
-			pipeline.sync();
-		} finally {
-		  pool.returnResource(jedis);
-		}
-	}
-	
-	public void putValue(String code, String name, boolean value) {
-		ShardedJedis jedis = pool.getResource();
-		try {
-        	jedis.set(Key.createKey(Arrays.asList(code, name)).toString(), Boolean.toString(value));
-		} finally {
-		  pool.returnResource(jedis);
-		}
-	}
-	
-	@PreDestroy
+        String[] value = new String[name.length];
+        try {
+            ShardedJedisPipeline pipeline = jedis.pipelined();
+            Response<String>[] response = new Response[name.length];
+            for (int i = 0; i < name.length; i++) {
+                response[i] = pipeline.get(code + "/" + name[i]);
+            }
+            pipeline.sync();
+
+            for (int i = 0; i < name.length; i++) {
+                Response<String> resp = response[i];
+                String s = resp.get();
+                if ( s != null) {
+                    value[i] = s;
+                }
+            }
+        } finally {
+            pool.returnResource(jedis);
+        }
+        return value;
+    }
+
+    @Override
+    public void putBatchValue(Map<String, String> kvMap) {
+        ShardedJedis jedis = pool.getResource();
+        try {
+            ShardedJedisPipeline pipeline = jedis.pipelined();
+            int i = 0;
+            for (Entry<String, String> entry : kvMap.entrySet()) {
+                pipeline.set(entry.getKey(), entry.getValue());
+                if (i++ % 100 == 0) {
+                    pipeline.sync();
+                }
+            }
+            pipeline.sync();
+        } finally {
+            pool.returnResource(jedis);
+        }
+    }
+
+    @Override
+    public void putValue(String key, String value) {
+        ShardedJedis jedis = pool.getResource();
+        try {
+            jedis.set(key, value);
+        } finally {
+            pool.returnResource(jedis);
+        }
+    }
+
+    @Override
+    public String getValue(String key) {
+        ShardedJedis jedis = pool.getResource();
+        String value = null;
+        try {
+            value = jedis.get(key);
+        } finally {
+            pool.returnResource(jedis);
+        }
+        return value;
+    }
+
+    @PreDestroy
 	public void destroy() {
 		pool.destroy();
 	}
