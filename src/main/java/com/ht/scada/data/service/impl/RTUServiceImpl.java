@@ -19,6 +19,7 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service("rtuService")
 public class RTUServiceImpl implements RTUService {
@@ -93,5 +94,10 @@ public class RTUServiceImpl implements RTUService {
         }
 		return false;
 	}
+
+    @Override
+    public boolean yt(String code, Map<String, Float> value) throws Exception {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
 }

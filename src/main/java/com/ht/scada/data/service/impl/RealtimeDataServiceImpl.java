@@ -1,5 +1,7 @@
 package com.ht.scada.data.service.impl;
 
+import com.ht.scada.common.tag.util.VarGroup;
+import com.ht.scada.common.tag.util.VarSubType;
 import com.ht.scada.data.service.RealtimeDataService;
 import redis.clients.jedis.*;
 import redis.clients.util.Hashing;
@@ -113,6 +115,26 @@ public class RealtimeDataServiceImpl implements RealtimeDataService {
             pool.returnResource(jedis);
         }
         return value;
+    }
+
+    @Override
+    public Map<VarSubType, String> getEndTagVarGroupInfo(String code, VarGroup group) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getEndTagVarInfo(String code, VarGroup group, VarSubType varType) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Map<String, String> getEndTagVarInfo(List<String> code, VarGroup group, VarSubType varType) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Object[][] getEndTagVarLineData(String code, VarGroup group, VarSubType varType) {
+        return new Object[0][];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @PreDestroy
