@@ -3,6 +3,7 @@ package com.ht.scada.data.service.impl;
 import com.ht.scada.common.tag.util.VarGroup;
 import com.ht.scada.common.tag.util.VarSubType;
 import com.ht.scada.data.service.RealtimeDataService;
+import org.springframework.stereotype.Service;
 import redis.clients.jedis.*;
 import redis.clients.util.Hashing;
 import redis.clients.util.Sharded;
@@ -18,8 +19,8 @@ import java.util.Map.Entry;
  * @author 薄成文
  *
  */
+@Service
 public class RealtimeDataServiceImpl implements RealtimeDataService {
-	//private JedisPool pool;
 	private ShardedJedisPool pool;
 	
 	@PostConstruct

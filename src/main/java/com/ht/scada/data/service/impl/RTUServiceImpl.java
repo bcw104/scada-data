@@ -1,8 +1,6 @@
 package com.ht.scada.data.service.impl;
 
-import com.ht.scada.common.middleware.service.UrlService;
 import com.ht.scada.data.service.RTUService;
-import com.ht.scada.data.service.RealtimeDataService;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -16,19 +14,21 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Service("rtuService")
+@Service
 public class RTUServiceImpl implements RTUService {
     public static final Logger log = LoggerFactory.getLogger(RTUServiceImpl.class);
 
     private DefaultHttpClient httpclient;
 
-    @Inject
-    private RealtimeDataService realtimeDataService;
+//    private RealtimeDataService realtimeDataService;
+
+    public RTUServiceImpl() {
+        System.out.println("----------=========");
+    }
 
     @PostConstruct
     private void init() {
@@ -42,7 +42,7 @@ public class RTUServiceImpl implements RTUService {
 	@Override
 	public boolean yk(String code, String varName, boolean value) throws Exception {
         log.info("执行遥控操作:{}-{}", code, varName);
-        String url = realtimeDataService.getValue(UrlService.COMM_URL_KEY);
+        String url = null;//realtimeDataService.getValue(UrlService.COMM_URL_KEY);
         if (url == null) {
             log.warn("未找到通讯服务器");
             return false;
@@ -70,7 +70,7 @@ public class RTUServiceImpl implements RTUService {
 	public boolean yt(String code, String varName, int value) throws Exception {
         log.info("执行遥调操作:{}-{}", code, varName);
 
-        String url = realtimeDataService.getValue(UrlService.COMM_URL_KEY);
+        String url = null;//realtimeDataService.getValue(UrlService.COMM_URL_KEY);
         if (url == null) {
             log.warn("未找到通讯服务器");
             return false;
