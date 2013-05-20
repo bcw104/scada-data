@@ -1,24 +1,13 @@
 package com.ht.scada.data.kv;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import oracle.kv.Key;
 import oracle.kv.Value;
-
 import org.joda.time.LocalDateTime;
 import org.xerial.snappy.Snappy;
 
-import com.ht.scada.common.tag.util.VarGroup;
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * 数据分组记录，相同的变量分组一起打包保存，保存时采用gzip格式进行压缩
@@ -31,7 +20,7 @@ public class VarGroupData implements IKVRecord {
 	public static final String RECORD_TYPE = "VAR_GROUP";
 	
 	private String code;// 计量点编号(回路号、井号等)
-	private VarGroup group;// 变量分组
+	private String group;// 变量分组
 
 	private Map<String, Float> ycValueMap = new HashMap<>();
 	private Map<String, Double> ymValueMap = new HashMap<>();
@@ -51,11 +40,11 @@ public class VarGroupData implements IKVRecord {
 		this.code = code;
 	}
 
-	public VarGroup getGroup() {
+	public String getGroup() {
 		return group;
 	}
 
-	public void setGroup(VarGroup group) {
+	public void setGroup(String group) {
 		this.group = group;
 	}
 
@@ -118,7 +107,7 @@ public class VarGroupData implements IKVRecord {
         
         final List<String> minorPath = key.getMinorPath();
         try {
-			setGroup(VarGroup.valueOf(minorPath.get(0)));
+			setGroup(minorPath.get(0));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

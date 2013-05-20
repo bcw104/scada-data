@@ -1,7 +1,5 @@
 package com.ht.scada.data.service.impl;
 
-import com.ht.scada.common.tag.util.VarGroup;
-import com.ht.scada.common.tag.util.VarSubType;
 import com.ht.scada.data.service.RealtimeDataService;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.*;
@@ -119,22 +117,22 @@ public class RealtimeDataServiceImpl implements RealtimeDataService {
     }
 
     @Override
-    public Map<VarSubType, String> getEndTagVarGroupInfo(String code, VarGroup group) {
+    public Map<String, String> getEndTagVarGroupInfo(String code, String group) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String getEndTagVarInfo(String code, VarGroup group, VarSubType varType) {
+    public String getEndTagVarInfo(String code, String group, String varName) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Map<String, String> getEndTagVarInfo(List<String> code, VarGroup group, VarSubType varType) {
+    public Map<String, String> getEndTagVarInfo(List<String> code, String group, String varName) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Object[][] getEndTagVarLineData(String code, VarGroup group, VarSubType varType) {
+    public Object[][] getEndTagVarLineData(String code, String group, String varType) {
         return new Object[0][];  //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -1,14 +1,11 @@
 package com.ht.scada.data.service;
 
-import com.ht.scada.common.tag.util.VarGroup;
-import com.ht.scada.common.tag.util.VarSubType;
-
 import java.util.List;
 import java.util.Map;
 
 /**
  * 实时数据库服务类<br>
- *     key 的格式为[endTagCode]/[varName] <br/>
+ *     key 的格式为[endTagCode]/[varGroup]/[varName] <br/>
  * 存储双浮点型的数据时采用Double.toString(v)的方式<br/>
  * 存储单浮点型的数据时采用Float.toString(v)的方式<br/>
  * 存储浮点型数组的数据时采用","连接成字符串的方式<br/>
@@ -39,33 +36,33 @@ public interface RealtimeDataService {
      * @param group
      * @return
      */
-    Map<VarSubType, String> getEndTagVarGroupInfo(String code, VarGroup group);
+    Map<String, String> getEndTagVarGroupInfo(String code, String group);
 
     /**
      * 获取末端指定变量的值
      * @param group
      * @param code
-     * @param varType
+     * @param varName
      * @return
      */
-    String getEndTagVarInfo(String code, VarGroup group, VarSubType varType);
+    String getEndTagVarInfo(String code, String group, String varName);
 
     /**
      * 批量获取末端指定变量的值
      * @param group
      * @param code
-     * @param varType
+     * @param varName
      * @return
      */
-    Map<String, String> getEndTagVarInfo(List<String> code, VarGroup group, VarSubType varType);
+    Map<String, String> getEndTagVarInfo(List<String> code, String group, String varName);
 
     /**
      * 获取曲线数据
      * @param code
      * @param group
-     * @param varType
+     * @param varName
      * @return
      */
-    Object[][] getEndTagVarLineData(String code, VarGroup group, VarSubType varType);
+    Object[][] getEndTagVarLineData(String code, String group, String varName);
 
 }

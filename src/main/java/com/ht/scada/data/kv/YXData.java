@@ -92,7 +92,7 @@ public class YXData implements IKVRecord {
         final List<String> majorPath = key.getMajorPath();
 
         if (!RECORD_TYPE.equals(majorPath.get(1))) {
-            throw new IllegalArgumentException("Not a yx kv: " + key);
+            throw new IllegalArgumentException("Not a yx com.ht.scada.data.com.ht.scada.data.kv: " + key);
         }
 
         setCode(majorPath.get(2));
