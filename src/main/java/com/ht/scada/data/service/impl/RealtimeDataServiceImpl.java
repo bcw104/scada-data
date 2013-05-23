@@ -20,6 +20,7 @@ import java.util.Map;
  */
 @Service
 public class RealtimeDataServiceImpl implements RealtimeDataService {
+
     @Inject
     private StringRedisTemplate redisTemplate;
 	
