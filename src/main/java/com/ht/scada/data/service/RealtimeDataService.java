@@ -55,4 +55,21 @@ public interface RealtimeDataService {
      */
     Object[][] getEndTagVarLineData(String code, String varName);
 
+    /**
+     * 查询单个遥测数组类型变量的实时数据, 返回结果可以为Null<br/>
+     * 主要用于获取功图和谐波数据<br/>
+     * @param code
+     * @param varName
+     * @return
+     */
+    float[] getEndTagVarYcArray(String code, String varName);
+
+    /**
+     * 查询多个遥测数组类型变量的实时数据, 返回结果可以为Null
+     * 主要用于获取功图和谐波数据<br/>
+     * @param code
+     * @param varName
+     * @return
+     */
+    Map<String, float[]> getEndTagVarYcArray(String code, List<String> varName);
 }

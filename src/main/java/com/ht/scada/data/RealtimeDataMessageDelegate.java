@@ -28,7 +28,7 @@ public class RealtimeDataMessageDelegate {
 
     /**
      * 收到故障报警信息<br/>
-     * 故障记录中的id可能为空，请不要用id来区分记录，推荐使用code+name+actiontime
+     * 故障记录中的id为字符串类型，客户端收到报警信息时该记录的ID已自动生成，但不保证立即写入数据库。
      * @param message
      */
     public void handleFaultMessage(String message) throws IOException {

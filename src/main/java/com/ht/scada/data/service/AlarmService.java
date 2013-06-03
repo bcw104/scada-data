@@ -2,7 +2,6 @@ package com.ht.scada.data.service;
 
 import com.ht.scada.data.entity.FaultRecord;
 import com.ht.scada.data.entity.OffLimitsRecord;
-import com.ht.scada.data.kv.YXData;
 
 import java.util.List;
 
@@ -28,11 +27,5 @@ public interface AlarmService {
 	 */
 	public List<OffLimitsRecord> getCurrentOffLimitsRecord(String code);
 	
-	/**
-	 * 返回当前的遥信变位记录
-	 * @param code
-	 * @return
-	 */
-	public List<YXData> getCurrentYXData(String code);
-	
+
 }

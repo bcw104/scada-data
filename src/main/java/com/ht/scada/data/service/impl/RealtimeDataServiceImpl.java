@@ -2,13 +2,11 @@ package com.ht.scada.data.service.impl;
 
 import com.ht.scada.data.service.RealtimeDataService;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +75,43 @@ public class RealtimeDataServiceImpl implements RealtimeDataService {
     @Override
     public Object[][] getEndTagVarLineData(String code, String varName) {
         return new Object[0][];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public float[] getEndTagVarYcArray(String code, String varName) {
+        String value = getValue(code + "/" + varName);
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
+        String[] data = value.split(",");
+        float [] ycArray = new float[data.length];
+        for (int i = 0; i < ycArray.length; i++) {
+            ycArray[i] = Float.parseFloat(data[i]);
+        }
+        return ycArray;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Map<String, float[]> getEndTagVarYcArray(String code, List<String> varNames) {
+        List<String> keyList = new ArrayList<>(varNames.size());
+        for (String varName : varNames) {
+            keyList.add(code + "/" + varName);
+        }
+        List<String> value = getMultiValue(keyList);
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
+
+        Map<String, float[]> map = new HashMap<>();
+        for (int i = 0; i < value.size(); i++) {
+            String[] data = value.get(i).split(",");
+            float [] ycArray = new float[data.length];
+            for (int j = 0; j < ycArray.length; j++) {
+                ycArray[j] = Float.parseFloat(data[i]);
+            }
+            map.put(varNames.get(i), ycArray);
+        }
+        return map;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @PreDestroy
