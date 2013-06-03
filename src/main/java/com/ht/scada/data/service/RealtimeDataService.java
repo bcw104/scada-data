@@ -52,7 +52,9 @@ public interface RealtimeDataService {
      * @param code
      * @param varName
      * @return
+     * @deprecated 请使用HistoryDataService中的相应接口代替
      */
+    @Deprecated
     Object[][] getEndTagVarLineData(String code, String varName);
 
     /**
