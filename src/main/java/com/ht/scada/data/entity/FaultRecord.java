@@ -85,5 +85,13 @@ public class FaultRecord extends AbstractPersistable<String> {
 	public void setResumeTime(Date resumeTime) {
 		this.resumeTime = resumeTime;
 	}
+	
+	/**
+	 * 生成报警记录用
+	 * @return
+	 */
+	public String getReMark() {
+		return "报警值为：" + (value==true?"1":"0");
+	}
 
 }

@@ -107,5 +107,13 @@ public class OffLimitsRecord  extends AbstractPersistable<String> {
 	public void setResumeTime(Date resumeTime) {
 		this.resumeTime = resumeTime;
 	}
+	
+	/**
+	 * 生成报警记录用
+	 * @return
+	 */
+	public String getReMark() {
+		return "动作值为：" + String.valueOf(value) + "；阈值为:"+String.valueOf(threshold);
+	}
 
 }

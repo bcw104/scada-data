@@ -65,5 +65,13 @@ public class YxRecord  extends AbstractPersistable<String> {
 	public void setDatetime(Date datetime) {
 		this.datetime = datetime;
 	}
+	
+	/**
+	 * 生成报警记录用
+	 * @return
+	 */
+	public String getReMark() {
+		return "变位值为：" + (value==true?"1":"0");
+	}
 
 }
