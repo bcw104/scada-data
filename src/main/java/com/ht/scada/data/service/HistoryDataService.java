@@ -1,6 +1,7 @@
 package com.ht.scada.data.service;
 
 import com.ht.scada.common.tag.util.VarGroupEnum;
+import com.ht.scada.data.kv.VarGroupData;
 import com.ht.scada.data.model.TimeSeriesDataModel;
 
 import java.util.Date;
@@ -37,4 +38,14 @@ public interface HistoryDataService {
      */
     Map<String, List<TimeSeriesDataModel>> getVarTimeSeriesData(String code, VarGroupEnum varGroup, List<String> varName, Date start, Date end);
 
+    /**
+     * 查询某监控对象在指定时间范围内的分组历史数据
+     * @param code 监控对象编辑
+     * @param varGroup 变量分组
+     * @param start 起始时间
+     * @param end 结束时间
+     * @param limit 返回的最大数量; 当limit<=0或limit>5000时最多返回5000项历史记录; 当limit>0&&limit<=5000时,最多返回limit项历史记录.
+     * @return
+     */
+    List<VarGroupData> getVarGroupData(String code, VarGroupEnum varGroup, Date start, Date end, int limit);
 }

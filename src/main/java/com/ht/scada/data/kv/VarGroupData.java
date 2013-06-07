@@ -1,17 +1,17 @@
 package com.ht.scada.data.kv;
 
+import com.ht.scada.common.tag.util.VarGroupEnum;
 import oracle.kv.Key;
 import oracle.kv.Value;
 import org.joda.time.LocalDateTime;
-import org.xerial.snappy.Snappy;
 
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 
 /**
- * 数据分组记录，相同的变量分组一起打包保存，保存时采用gzip格式进行压缩
- * 
+ * 数据分组记录，存入nosql数据库<br/>
+ * 相同的变量分组一起打包保存，保存时采用snappy进行压缩
  * @author 薄成文
  * 
  */
@@ -20,7 +20,7 @@ public class VarGroupData implements IKVRecord {
 	public static final String RECORD_TYPE = "VAR_GROUP";
 	
 	private String code;// 计量点编号(回路号、井号等)
-	private String group;// 变量分组
+	private VarGroupEnum group;// 变量分组
 
 	private Map<String, Float> ycValueMap = new HashMap<>();
 	private Map<String, Double> ymValueMap = new HashMap<>();
@@ -40,11 +40,11 @@ public class VarGroupData implements IKVRecord {
 		this.code = code;
 	}
 
-	public String getGroup() {
+	public VarGroupEnum getGroup() {
 		return group;
 	}
 
-	public void setGroup(String group) {
+	public void setGroup(VarGroupEnum group) {
 		this.group = group;
 	}
 
@@ -107,7 +107,7 @@ public class VarGroupData implements IKVRecord {
         
         final List<String> minorPath = key.getMinorPath();
         try {
-			setGroup(minorPath.get(0));
+			setGroup(VarGroupEnum.valueOf(minorPath.get(0)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -122,19 +122,19 @@ public class VarGroupData implements IKVRecord {
 //        	SnappyOutputStream sos = new SnappyOutputStream(baos);
 //        	DataOutputStream dos = new DataOutputStream(sos);
         	DataOutputStream dos = new DataOutputStream(baos);
-        	
-        	dos.writeInt(ycValueMap.size());
+
+            dos.writeInt(ycValueMap.size());
         	for (Entry<String, Float> entry : ycValueMap.entrySet()) {
 	        	dos.writeUTF(entry.getKey());
 	        	dos.writeFloat(entry.getValue());
         	}
-        	
+
         	dos.writeInt(ymValueMap.size());
         	for (Entry<String, Double> entry : ymValueMap.entrySet()) {
 	        	dos.writeUTF(entry.getKey());
 	        	dos.writeDouble(entry.getValue());
         	}
-        	
+
         	dos.writeInt(yxValueMap.size());
         	for (Entry<String, Boolean> entry : yxValueMap.entrySet()) {
 	        	dos.writeUTF(entry.getKey());
@@ -150,13 +150,16 @@ public class VarGroupData implements IKVRecord {
 	        		dos.writeFloat(f);
 	        	}
         	}
-        	dos.close();
-        	
-			return Value.createValue(Snappy.compress(baos.toByteArray()));
+
+            Value value = Value.createValue(baos.toByteArray());
+            baos.close();
+            return value;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            //throw new RuntimeException(e);
         }
-        
+
+        return null;
         
 //		return Value.createValue(baos.toByteArray());
 	}
@@ -164,11 +167,15 @@ public class VarGroupData implements IKVRecord {
 	@Override
 	public void parseValue(Value value) {
         try {
-        	ByteArrayInputStream bais = new ByteArrayInputStream(Snappy.uncompress(value.getValue()));
+        	ByteArrayInputStream bais = new ByteArrayInputStream(value.getValue());
+
+//            SnappyInputStream sis = new SnappyInputStream(bais);
+//            DataInputStream dis = new DataInputStream(sis);
+
         	//GZIPInputStream gis = new GZIPInputStream(bais);
         	//DataInputStream dis = new DataInputStream(gis);
         	DataInputStream dis = new DataInputStream(bais);
-        	
+
         	int ycSize = dis.readInt();
         	for (int i = 0; i < ycSize; i++) {
         		ycValueMap.put(dis.readUTF(), dis.readFloat());
