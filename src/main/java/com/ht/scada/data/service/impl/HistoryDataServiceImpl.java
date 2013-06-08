@@ -81,8 +81,8 @@ public class HistoryDataServiceImpl implements HistoryDataService {
             limit = 5000;
         }
 
-        final String startTimestamp = LocalDateTime.fromDateFields(start).toString();
-        final String endTimestamp = LocalDateTime.fromDateFields(end).toString();
+        String startTimestamp = LocalDateTime.fromDateFields(start).toString();
+        String endTimestamp = LocalDateTime.fromDateFields(end).toString();
 
         KeyRange keyRange = new KeyRange(startTimestamp /*start*/, true /*startInclusive*/,
                 endTimestamp /*end*/, false /*endInclusive*/);
@@ -117,5 +117,26 @@ public class HistoryDataServiceImpl implements HistoryDataService {
             i++;
         }
         return list;
+    }
+
+    @Override
+    public VarGroupData getVarGroupData(String code, VarGroupEnum varGroup, Date start) {
+
+        String startTimestamp = LocalDateTime.fromDateFields(start).toString();
+
+        KeyRange keyRange = new KeyRange(startTimestamp /*start*/, true /*startInclusive*/,
+                null /*end*/, false /*endInclusive*/);
+
+        Key parentKey = KeyDefinition.getVarGroupKey(code, varGroup.toString());
+        Iterator<KeyValueVersion> keyValueVersionIterator = store.multiGetIterator(Direction.FORWARD, 1, KeyDefinition.getVarGroupKey(code, varGroup.toString()), keyRange, Depth.CHILDREN_ONLY);
+
+        VarGroupData data = new VarGroupData();
+        while (keyValueVersionIterator.hasNext()) {
+            KeyValueVersion keyValueVersion = keyValueVersionIterator.next();
+            data.parseKey(keyValueVersion.getKey());
+            data.parseValue(keyValueVersion.getValue());
+            break;
+        }
+        return data;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -48,4 +48,13 @@ public interface HistoryDataService {
      * @return
      */
     List<VarGroupData> getVarGroupData(String code, VarGroupEnum varGroup, Date start, Date end, int limit);
+
+    /**
+     * 查询该时间点最新的一条数据记录
+     * @param code
+     * @param varGroup
+     * @param start
+     * @return 大于起始时间的第一条数据记录, 返回结果可以为空
+     */
+    VarGroupData getVarGroupData(String code, VarGroupEnum varGroup, Date start);
 }
