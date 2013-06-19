@@ -1,6 +1,6 @@
 package com.ht.scada.data;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSONObject;
 import com.ht.scada.data.entity.FaultRecord;
 import com.ht.scada.data.entity.OffLimitsRecord;
 import com.ht.scada.data.entity.YxRecord;
@@ -15,12 +15,7 @@ import java.io.IOException;
  */
 public class RealtimeDataMessageDelegate {
 
-    private ObjectMapper objectMapper;
     private RealtimeMessageListener listener;
-
-    public RealtimeDataMessageDelegate() {
-        objectMapper = new ObjectMapper();
-    }
 
     public void setListener(RealtimeMessageListener listener) {
         this.listener = listener;
@@ -35,7 +30,7 @@ public class RealtimeDataMessageDelegate {
         System.out.println("收到故障报警");
         System.out.println(message);
         if (listener != null) {
-            FaultRecord record = objectMapper.readValue(message, FaultRecord.class);
+            FaultRecord record = JSONObject.parseObject(message, FaultRecord.class);
             System.out.println(record);
             if (record.getResumeTime() == null) {
                 // 新故障记录
@@ -57,7 +52,7 @@ public class RealtimeDataMessageDelegate {
         System.out.println("收到越限报警");
         System.out.println(message);
         if (listener != null) {
-            OffLimitsRecord record = objectMapper.readValue(message, OffLimitsRecord.class);
+            OffLimitsRecord record = JSONObject.parseObject(message, OffLimitsRecord.class);
             if (record.getResumeTime() == null) {
                 // 新越限记录
                 listener.offLimitsOccured(record);
@@ -78,7 +73,7 @@ public class RealtimeDataMessageDelegate {
         System.out.println("收到遥信变位信息");
         System.out.println(message);
         if (listener != null) {
-            YxRecord record = objectMapper.readValue(message, YxRecord.class);
+            YxRecord record = JSONObject.parseObject(message, YxRecord.class);
             System.out.println(record);
         }
     }

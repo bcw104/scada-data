@@ -16,33 +16,35 @@ import java.util.Map;
 public interface RealtimeDataService {
 
 
-//    Map<String, Float> getBatchFloatValue(String code, String[] name);
-//	Map<String, Double> getBatchDoubleValue(String code, String[] name);
-//	Map<String, Boolean> getBatchBoolValue(String code, String[] name);
-    String getValue(String key);
-    List<String> getMultiValue(List<String> key);
-
     List<String> getEndTagMultiVarValue(String code, List<String> name);
+
+    /**
+     * 查询监控对象所有变量的实时数据
+     * @param code
+     * @return
+     */
+    Map<String, String> getEndTagAllVarValue(String code);
+
     /**
      * 获取末端指定变量组的所有变量值
-     * @param code
-     * @param group
+     * @param code 监控对象编号
+     * @param group 监控对象变量组
      * @return
      */
     Map<String, String> getEndTagVarGroupInfo(String code, String group);
 
     /**
      * 获取单个监控对象指定变量的值
-     * @param code
-     * @param varName
+     * @param code 监控对象编号
+     * @param varName 遥测、遥信、遥脉变量（请不要传递其它类型的变量，包括遥测数组）
      * @return
      */
     String getEndTagVarInfo(String code, String varName);
 
     /**
      * 获取多个监控对象指定变量的值
-     * @param code
-     * @param varName
+     * @param code 监控对象编号
+     * @param varName 遥测、遥信、遥脉变量（请不要传递其它类型的变量，包括遥测数组）
      * @return
      */
     Map<String, String> getEndTagVarInfo(List<String> code, String varName);
@@ -58,8 +60,8 @@ public interface RealtimeDataService {
     Object[][] getEndTagVarLineData(String code, String varName);
 
     /**
-     * 查询单个遥测数组类型变量的实时数据, 返回结果可以为Null<br/>
-     * 主要用于获取功图和谐波数据<br/>
+     * 查询遥测数组实时数据, 返回结果可以为Null<br/>
+     * 用于获取功图和谐波等数组形式的数组数据<br/>
      * @param code
      * @param varName
      * @return
@@ -67,8 +69,8 @@ public interface RealtimeDataService {
     float[] getEndTagVarYcArray(String code, String varName);
 
     /**
-     * 查询多个遥测数组类型变量的实时数据, 返回结果可以为Null
-     * 主要用于获取功图和谐波数据<br/>
+     * 查询多个遥测数组实时数据, 返回结果可以为Null
+     * 用于获取功图和谐波等数组形式的数组数据<br/>
      * @param code
      * @param varName
      * @return

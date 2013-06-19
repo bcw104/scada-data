@@ -7,10 +7,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 薄成文
@@ -27,59 +24,66 @@ public class RealtimeDataServiceImpl implements RealtimeDataService {
     }
 
     @Override
-    public String getValue(String key) {
-        return redisTemplate.opsForValue().get(key);
-    }
-
-    @Override
-    public List<String> getMultiValue(List<String> key) {
-        return  redisTemplate.opsForValue().multiGet(key);
-    }
-
-    @Override
     public List<String> getEndTagMultiVarValue(String code, List<String> name) {
-        List<String> keyList = new ArrayList<>(name.size());
-        for (String n : name) {
-            keyList.add(code + "/" + n);
-        }
-        return  getMultiValue(keyList);
+        return redisTemplate.<String, String>opsForHash().multiGet(code, name);
+    }
+
+    @Override
+    public Map<String, String> getEndTagAllVarValue(String code) {
+        return redisTemplate.<String, String>opsForHash().entries(code);
     }
 
     @Override
     public Map<String, String> getEndTagVarGroupInfo(String code, String group) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String varNameJoins = redisTemplate.<String, String>opsForHash().get(code + ":GROUP", group);
+        if (varNameJoins != null) {
+            String[] varNameArray = varNameJoins.split(",");
+            if (varNameArray.length > 0) {
+                List<String> values = redisTemplate.<String, String>opsForHash().multiGet(code, Arrays.asList(varNameArray));
+                Map<String, String> map = new HashMap<>(varNameArray.length);
+                for (int i = 0; i < varNameArray.length; i++) {
+                    String varName = varNameArray[i];
+                    String value = values.get(i);
+                    if (value != null) {
+                        map.put(varName, value);
+                    }
+                }
+                return map;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     @Override
     public String getEndTagVarInfo(String code, String varName) {
-        return getValue(code + "/" + varName);  //To change body of implemented methods use File | Settings | File Templates.
+        return redisTemplate.<String, String>opsForHash().get(code, varName);
     }
 
     @Override
     public Map<String, String> getEndTagVarInfo(List<String> code, String varName) {
-        List<String> keyList = new ArrayList<>(code.size());
+        Map<String, String> map = new HashMap<>(code.size());
         for (String s : code) {
-            keyList.add(s + "/" + varName);
-        }
-        List<String> value = getMultiValue(keyList);
-
-        Map<String, String> map = new HashMap<>(value.size());
-        for (int i = 0; i < value.size(); i++) {
-            String k = code.get(i);
-            String v =  value.get(i);
-            map.put(k, v);
+            String value = redisTemplate.<String, String>opsForHash().get(s, varName);
+            if (value != null) {
+                map.put(s, varName);
+            }
         }
         return map;
     }
 
     @Override
     public Object[][] getEndTagVarLineData(String code, String varName) {
-        return new Object[0][];  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO 应用发布后将删除方法，请参考接口说明
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public float[] getEndTagVarYcArray(String code, String varName) {
-        String value = getValue(code + "/" + varName);
+
+        String value = redisTemplate.<String, String>opsForHash().get(code + ":ARRAY", varName);
         if (value == null || value.isEmpty()) {
             return null;
         }
@@ -93,23 +97,24 @@ public class RealtimeDataServiceImpl implements RealtimeDataService {
 
     @Override
     public Map<String, float[]> getEndTagVarYcArray(String code, List<String> varNames) {
-        List<String> keyList = new ArrayList<>(varNames.size());
-        for (String varName : varNames) {
-            keyList.add(code + "/" + varName);
-        }
-        List<String> value = getMultiValue(keyList);
+        List<String> value = redisTemplate.<String, String>opsForHash().multiGet(code + ":ARRAY", varNames);
         if (value == null || value.isEmpty()) {
             return null;
         }
 
         Map<String, float[]> map = new HashMap<>();
         for (int i = 0; i < value.size(); i++) {
-            String[] data = value.get(i).split(",");
-            float [] ycArray = new float[data.length];
-            for (int j = 0; j < ycArray.length; j++) {
-                ycArray[j] = Float.parseFloat(data[i]);
+            String v = value.get(i);
+            if (v != null) {
+                String[] data = v.split(",");
+                if (data.length > 0) {
+                    float [] ycArray = new float[data.length];
+                    for (int j = 0; j < ycArray.length; j++) {
+                        ycArray[j] = Float.parseFloat(data[i]);
+                    }
+                    map.put(varNames.get(i), ycArray);
+                }
             }
-            map.put(varNames.get(i), ycArray);
         }
         return map;  //To change body of implemented methods use File | Settings | File Templates.
     }

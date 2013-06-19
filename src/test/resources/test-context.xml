@@ -20,10 +20,10 @@
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="packagesToScan" value="com.ht.scada.data.entity"/>
+		<property name="packagesToScan" value="com.ht.scada.**.entity"/>
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-				<property name="showSql" value="true" />
+				<property name="showSql" value="false" />
 				<property name="generateDdl" value="true" />
 				<property name="database" value="H2" />
 			</bean>
@@ -32,8 +32,8 @@
 		<property name="persistenceUnitName" value="primary" />
 		<property name="jpaProperties">
 			<props>
-				<prop key="hibernate.hbm2ddl.auto">create</prop>
-				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!--<prop key="hibernate.show_sql">true</prop>-->
 				<prop key="hibernate.format_sql">true</prop>
 				<prop key="javax.persistence.validation.mode">none</prop>
 			</props>
@@ -41,9 +41,9 @@
 	</bean>
 
 	<context:annotation-config />
-	<context:component-scan base-package="com.ht.scada.data.service.impl" />
+	<context:component-scan base-package="com.ht.scada.**.service.impl" />
 
-	<jpa:repositories base-package="com.ht.scada.data.dao" />
+	<jpa:repositories base-package="com.ht.scada.**.dao" />
 
 	<!-- 用于指定一些高级特性 -->
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
@@ -55,17 +55,20 @@
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
 
-    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-          p:usePool="true" />
+    <bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+          p:hostName="localhost" p:port="6379" p:password=""/>
+    <!-- Configurer that replaces ${...} placeholders with values from a properties file -->
+    <!--<context:property-placeholder location="classpath*:/redis.properties"/>-->
 
-    <!-- redis template definition -->
     <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate"
-          p:connectionFactory-ref="jedisConnectionFactory"/>
+          p:connectionFactory-ref="connectionFactory"/>
 
-    <redis:listener-container>
-        <!-- the method attribute can be skipped as the default method name is "handleMessage" -->
-        <redis:listener ref="listener" method="handleMessage" topic="chatroom" />
-    </redis:listener-container>
+    <!--<redis:listener-container connection-factory="connectionFactory">-->
+        <!--&lt;!&ndash; the method attribute can be skipped as the default method name is "handleMessage" &ndash;&gt;-->
+        <!--<redis:listener ref="alarmListener" method="handleFaultMessage" topic="FaultChannel" />-->
+        <!--<redis:listener ref="alarmListener" method="handleOffLimitsMessage" topic="OffLimitsChannel" />-->
+        <!--<redis:listener ref="alarmListener" method="handleYxChangeMessage" topic="YxChangeChannel" />-->
+    <!--</redis:listener-container>-->
 
-    <bean id="listener" class="com.ht.scada.data.RealtimeDataMessageDelegate"/>
+    <bean id="alarmListener" class="com.ht.scada.data.RealtimeDataMessageDelegate"/>
 </beans>
