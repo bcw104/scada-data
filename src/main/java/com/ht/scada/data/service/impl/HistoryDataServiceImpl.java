@@ -7,6 +7,7 @@ import com.ht.scada.data.model.TimeSeriesDataModel;
 import com.ht.scada.data.service.HistoryDataService;
 import oracle.kv.*;
 import org.joda.time.LocalDateTime;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -16,6 +17,7 @@ import java.util.*;
  * @author: 薄成文 13-5-27 上午10:30
  * To change this template use File | Settings | File Templates.
  */
+@Service
 public class HistoryDataServiceImpl implements HistoryDataService {
 
     private KVStore store;

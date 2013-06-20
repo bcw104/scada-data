@@ -1,10 +1,10 @@
 package com.ht.scada.data.entity;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
-import org.springframework.data.jpa.domain.AbstractPersistable;
+import org.springframework.data.domain.Persistable;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -14,7 +14,13 @@ import java.util.Date;
  */
 @Entity
 @Table(name="T_YX_Record")
-public class YxRecord  extends AbstractPersistable<String> {
+public class YxRecord implements Persistable<String> {
+
+    @Id
+    @GenericGenerator(name="idGenerator", strategy="uuid") //这个是hibernate的注解
+    @GeneratedValue(generator="idGenerator") //使用uuid的生成策略
+    @Column(length = 32)
+    private String id;
 
 	private String code;// 计量点编号(回路号、井号等)
 	private String name;// 变量名称
@@ -74,4 +80,72 @@ public class YxRecord  extends AbstractPersistable<String> {
 		return "变位值为：" + (value==true?"1":"0");
 	}
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.springframework.data.domain.Persistable#getId()
+     */
+    public String getId() {
+
+        return id;
+    }
+
+    /**
+     * Sets the id of the entity.
+     *
+     * @param id the id to set
+     */
+    protected void setId(final String id) {
+
+        this.id = id;
+    }
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.springframework.data.domain.Persistable#isNew()
+     */
+    public boolean isNew() {
+
+        return null == getId();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if (null == obj) {
+            return false;
+        }
+
+        if (this == obj) {
+            return true;
+        }
+
+        if (!getClass().equals(obj.getClass())) {
+            return false;
+        }
+
+        YxRecord that = (YxRecord) obj;
+
+        return null == this.getId() ? false : this.getId().equals(that.getId());
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        int hashCode = 17;
+
+        hashCode += null == getId() ? 0 : getId().hashCode() * 31;
+
+        return hashCode;
+    }
 }

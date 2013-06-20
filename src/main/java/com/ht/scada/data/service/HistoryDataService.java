@@ -27,7 +27,7 @@ public interface HistoryDataService {
      */
     List<TimeSeriesDataModel> getVarTimeSeriesData(String code, VarGroupEnum varGroup, String varName, Date start, Date end);
 
-    /**
+    /*
      * 查询多个变量在指定时间范围内的历史数据, 可用于绘制曲线图
      * @param code
      * @param varGroup
