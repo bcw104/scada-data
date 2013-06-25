@@ -24,7 +24,7 @@ public class RealtimeDataServiceTest extends AbstractTestNGSpringContextTests {
     @Inject
     private StringRedisTemplate redisTemplate;
 
-    @PostConstruct
+   // @PostConstruct
     public void init() {
         Map<String, String> inputMap = Maps.newHashMap();
         inputMap.put("test", "true");
@@ -40,30 +40,45 @@ public class RealtimeDataServiceTest extends AbstractTestNGSpringContextTests {
     @Test
     public void getEndTagAllVarValueTest() {
         System.out.println("###### getEndTagAllVarValueTest ######");
-        Map<String, String> map = realtimeDataService.getEndTagAllVarValue("codeTest");
-        assert map != null;
-        assert map.size() == 2;
-        System.out.println(map);
+        Map<String, String> map = realtimeDataService.getEndTagAllVarValue("code_001");
+//        assert map != null;
+//        assert map.size() == 2;
+        for(String s : map.keySet()) {
+        	System.out.println(s);
+        	System.out.println(map.get(s));
+        }
+        System.out.println(map.size());
         System.out.println("###### getEndTagAllVarValueTest END ######");
     }
-
+    
     @Test
-    public void getEndTagVarGroupInfoTest() {
-        System.out.println("###### getEndTagVarGroupInfoTest ######");
-
-        Map<String, String> map = realtimeDataService.getEndTagVarGroupInfo("codeTest", VarGroupEnum.DIAN_YC.toString());
-        assert map != null;
-        assert map.size() == 1;
-        assert map.get("test").equals("true");
-        System.out.println(map);
-
-        map = realtimeDataService.getEndTagVarGroupInfo("codeTest", VarGroupEnum.DIAN_YM.toString());
-        assert map != null;
-        assert map.size() == 1;
-        assert map.get("numberText").equals("123");
-        System.out.println(map);
-
-        System.out.println("###### getEndTagVarGroupInfoTest END ######");
+    public void getEndTagVarGroupInfo() {
+    	System.out.println("##############################");
+    	Map<String, String> map = realtimeDataService.getEndTagVarGroupInfo("code_001", "DIAN_XB");
+    	for(String s : map.keySet()) {
+        	System.out.println(s);
+        	System.out.println(map.get(s));
+        }
+    	System.out.println("##############################");
     }
+    @Test
+    public void getEndTagVarInfo() {
+    	System.out.println("##############################");
+    	String value = realtimeDataService.getEndTagVarInfo("code_001", "wei_yi_array");
+        System.out.println(value);
+    	System.out.println("##############################");
+    }
+    @Test
+    public void getEndTagVarYcArray() {
+    	System.out.println("##############################");
+    	float[] value = realtimeDataService.getEndTagVarYcArray("code_001", "wei_yi_array");
+        for(float f : value) {
+        	System.out.println(f);
+        }
+    	System.out.println("##############################");
+    	
+    }
+
+    
 
 }
