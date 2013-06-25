@@ -1,6 +1,11 @@
 package com.ht.scada.data.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Maps;
+import com.ht.scada.common.tag.entity.EndTag;
+import com.ht.scada.common.tag.entity.EnergyMinorTag;
+import com.ht.scada.common.tag.entity.VarIOInfo;
 import com.ht.scada.common.tag.util.VarGroupEnum;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -9,6 +14,9 @@ import org.testng.annotations.Test;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +31,24 @@ public class RealtimeDataServiceTest extends AbstractTestNGSpringContextTests {
     private RealtimeDataService realtimeDataService;
     @Inject
     private StringRedisTemplate redisTemplate;
+
+    public static void main(String[] args) {
+        EndTag endTag = new EndTag();
+        endTag.setName("abc");
+
+        EnergyMinorTag minorTag = new EnergyMinorTag();
+        minorTag.setName("minorTag");
+        endTag.setEnergyMinorTag(minorTag);
+
+        List<VarIOInfo> list = new ArrayList<>();
+        VarIOInfo ioInfo = new VarIOInfo();
+        ioInfo.setEndTag(endTag);
+        ioInfo.setVarName("abc");
+        list.add(ioInfo);
+        endTag.setIoInfo(list);
+
+        System.out.println(JSON.toJSONString(endTag, SerializerFeature.WriteMapNullValue, SerializerFeature.QuoteFieldNames) );
+    }
 
     @PostConstruct
     public void init() {
@@ -64,6 +90,22 @@ public class RealtimeDataServiceTest extends AbstractTestNGSpringContextTests {
         System.out.println(map);
 
         System.out.println("###### getEndTagVarGroupInfoTest END ######");
+    }
+
+    @Test
+    public void getEndTagMultiVarValueTest() {
+        System.out.println("###### getEndTagMultiVarValue ######");
+        List<String> list = realtimeDataService.getEndTagMultiVarValue("codeTest", Arrays.asList("numberText", "test"));
+        assert list != null;
+        assert !list.isEmpty();
+        System.out.println(list);
+        System.out.println("###### getEndTagMultiVarValue END ######");
+    }
+
+    @Test
+    public void getEndTagVarYcArray() {
+        float[] array = realtimeDataService.getEndTagVarYcArray("code_001", "xb_ia_array");
+        System.out.println(Arrays.toString(array));
     }
 
 }
