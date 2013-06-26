@@ -75,5 +75,5 @@ public interface RealtimeDataService {
      * @param varName
      * @return
      */
-    Map<String, float[]> getEndTagVarYcArray(String code, List<String> varName);
+    Map<String, String> getEndTagVarYcArray(String code, List<String> varName);
 }
