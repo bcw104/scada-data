@@ -104,8 +104,8 @@ public class RealtimeDataServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void getEndTagVarYcArray() {
-        float[] array = realtimeDataService.getEndTagVarYcArray("code_001", "xb_ia_array");
-        System.out.println(Arrays.toString(array));
+        String array = realtimeDataService.getEndTagVarYcArray("code_001", "xb_ia_array");
+        System.out.println(array);
     }
 
 }

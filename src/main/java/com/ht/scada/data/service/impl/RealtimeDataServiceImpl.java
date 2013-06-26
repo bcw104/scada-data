@@ -81,18 +81,19 @@ public class RealtimeDataServiceImpl implements RealtimeDataService {
     }
 
     @Override
-    public float[] getEndTagVarYcArray(String code, String varName) {
+    public String getEndTagVarYcArray(String code, String varName) {
 
         String value = redisTemplate.<String, String>opsForHash().get(code + ":ARRAY", varName);
         if (value == null || value.isEmpty()) {
             return null;
         }
-        String[] data = value.split(",");
-        float [] ycArray = new float[data.length];
-        for (int i = 0; i < ycArray.length; i++) {
-            ycArray[i] = Float.parseFloat(data[i]);
-        }
-        return ycArray;  //To change body of implemented methods use File | Settings | File Templates.
+        return value;
+//        String[] data = value.split(",");
+//        float [] ycArray = new float[data.length];
+//        for (int i = 0; i < ycArray.length; i++) {
+//            ycArray[i] = Float.parseFloat(data[i]);
+//        }
+//        return ycArray;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
