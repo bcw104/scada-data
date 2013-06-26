@@ -3,6 +3,9 @@ package com.ht.scada.data;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: bcw
@@ -33,11 +36,9 @@ public enum Config {
     private int redisTimeout;
 
     private Config() {
-    }
-
-    public void init(String configPath) {
         try {
-            config = new PropertiesConfiguration(configPath);
+            config = new PropertiesConfiguration(Config.class.getResource("/config.properties").toURI().toURL());
+            //config = new PropertiesConfiguration(configPath);
             config.setAutoSave(true);
 
             kvHostPort = config.getStringArray("kv.hostPort");
@@ -53,6 +54,10 @@ public enum Config {
 
         } catch (ConfigurationException e) {
             e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (URISyntaxException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
