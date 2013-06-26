@@ -1,14 +1,19 @@
 package com.ht.scada.data.service.impl;
 
 import com.ht.scada.common.tag.util.VarGroupEnum;
+import com.ht.scada.data.Config;
 import com.ht.scada.data.kv.KeyDefinition;
 import com.ht.scada.data.kv.VarGroupData;
 import com.ht.scada.data.model.TimeSeriesDataModel;
 import com.ht.scada.data.service.HistoryDataService;
 import oracle.kv.*;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.*;
 
 /**
@@ -19,8 +24,31 @@ import java.util.*;
  */
 @Service
 public class HistoryDataServiceImpl implements HistoryDataService {
+    private static final Logger log = LoggerFactory.getLogger(HistoryDataServiceImpl.class);
 
     private KVStore store;
+
+    private KVStoreConfig initKVStore() {
+        KVStoreConfig config = new KVStoreConfig(Config.INSTANCE.getKvStoreName(), Config.INSTANCE.getKvHostPort());
+        config.setRequestLimit(RequestLimitConfig.getDefault());
+
+        try {
+            store = KVStoreFactory.getStore(config);
+        } catch (FaultException e) {
+            log.error("无法连接到时任何一个节点", e);
+        }
+        return config;
+    }
+
+    @PostConstruct
+    private void init() {
+        initKVStore();
+    }
+
+    @PreDestroy
+    private void destroy() {
+        store.close();
+    }
 
     @Override
     public List<TimeSeriesDataModel> getVarTimeSeriesData(String code, VarGroupEnum varGroup, String varName, Date start, Date end) {
