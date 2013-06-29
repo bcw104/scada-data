@@ -1,6 +1,11 @@
 package com.ht.scada.data.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Maps;
+import com.ht.scada.common.tag.entity.EndTag;
+import com.ht.scada.common.tag.entity.EnergyMinorTag;
+import com.ht.scada.common.tag.entity.VarIOInfo;
 import com.ht.scada.common.tag.util.VarGroupEnum;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -9,6 +14,9 @@ import org.testng.annotations.Test;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +32,25 @@ public class RealtimeDataServiceTest extends AbstractTestNGSpringContextTests {
     @Inject
     private StringRedisTemplate redisTemplate;
 
-   // @PostConstruct
+    public static void main(String[] args) {
+        EndTag endTag = new EndTag();
+        endTag.setName("abc");
+
+        EnergyMinorTag minorTag = new EnergyMinorTag();
+        minorTag.setName("minorTag");
+        endTag.setEnergyMinorTag(minorTag);
+
+        List<VarIOInfo> list = new ArrayList<>();
+        VarIOInfo ioInfo = new VarIOInfo();
+        ioInfo.setEndTag(endTag);
+        ioInfo.setVarName("abc");
+        list.add(ioInfo);
+        endTag.setIoInfo(list);
+
+        System.out.println(JSON.toJSONString(endTag, SerializerFeature.WriteMapNullValue, SerializerFeature.QuoteFieldNames) );
+    }
+
+    @PostConstruct
     public void init() {
         Map<String, String> inputMap = Maps.newHashMap();
         inputMap.put("test", "true");
@@ -40,45 +66,46 @@ public class RealtimeDataServiceTest extends AbstractTestNGSpringContextTests {
     @Test
     public void getEndTagAllVarValueTest() {
         System.out.println("###### getEndTagAllVarValueTest ######");
-        Map<String, String> map = realtimeDataService.getEndTagAllVarValue("code_001");
-//        assert map != null;
-//        assert map.size() == 2;
-        for(String s : map.keySet()) {
-        	System.out.println(s);
-        	System.out.println(map.get(s));
-        }
-        System.out.println(map.size());
+        Map<String, String> map = realtimeDataService.getEndTagAllVarValue("codeTest");
+        assert map != null;
+        assert map.size() == 2;
+        System.out.println(map);
         System.out.println("###### getEndTagAllVarValueTest END ######");
     }
-    
+
     @Test
-    public void getEndTagVarGroupInfo() {
-    	System.out.println("##############################");
-    	Map<String, String> map = realtimeDataService.getEndTagVarGroupInfo("code_001", "DIAN_XB");
-    	for(String s : map.keySet()) {
-        	System.out.println(s);
-        	System.out.println(map.get(s));
-        }
-    	System.out.println("##############################");
-    }
-    @Test
-    public void getEndTagVarInfo() {
-    	System.out.println("##############################");
-    	String value = realtimeDataService.getEndTagVarInfo("code_001", "wei_yi_array");
-        System.out.println(value);
-    	System.out.println("##############################");
-    }
-    @Test
-    public void getEndTagVarYcArray() {
-    	System.out.println("##############################");
-    	float[] value = realtimeDataService.getEndTagVarYcArray("code_001", "wei_yi_array");
-        for(float f : value) {
-        	System.out.println(f);
-        }
-    	System.out.println("##############################");
-    	
+    public void getEndTagVarGroupInfoTest() {
+        System.out.println("###### getEndTagVarGroupInfoTest ######");
+
+        Map<String, String> map = realtimeDataService.getEndTagVarGroupInfo("codeTest", VarGroupEnum.DIAN_YC.toString());
+        assert map != null;
+        assert map.size() == 1;
+        assert map.get("test").equals("true");
+        System.out.println(map);
+
+        map = realtimeDataService.getEndTagVarGroupInfo("codeTest", VarGroupEnum.DIAN_YM.toString());
+        assert map != null;
+        assert map.size() == 1;
+        assert map.get("numberText").equals("123");
+        System.out.println(map);
+
+        System.out.println("###### getEndTagVarGroupInfoTest END ######");
     }
 
-    
+    @Test
+    public void getEndTagMultiVarValueTest() {
+        System.out.println("###### getEndTagMultiVarValue ######");
+        List<String> list = realtimeDataService.getEndTagMultiVarValue("codeTest", Arrays.asList("numberText", "test"));
+        assert list != null;
+        assert !list.isEmpty();
+        System.out.println(list);
+        System.out.println("###### getEndTagMultiVarValue END ######");
+    }
+
+    @Test
+    public void getEndTagVarYcArray() {
+        String array = realtimeDataService.getEndTagVarYcArray("code_001", "xb_ia_array");
+        System.out.println(array);
+    }
 
 }

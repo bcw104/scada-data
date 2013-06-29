@@ -1,9 +1,12 @@
 package com.ht.scada.data;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ht.scada.data.entity.FaultRecord;
 import com.ht.scada.data.entity.OffLimitsRecord;
 import com.ht.scada.data.entity.YxRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -14,6 +17,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class RealtimeDataMessageDelegate {
+    public static final Logger log = LoggerFactory.getLogger(RealtimeDataMessageDelegate.class);
 
     private RealtimeMessageListener listener;
 
@@ -27,11 +31,9 @@ public class RealtimeDataMessageDelegate {
      * @param message
      */
     public void handleFaultMessage(String message) throws IOException {
-        System.out.println("收到故障报警");
-        System.out.println(message);
+        log.warn("收到故障报警:{}", message);
         if (listener != null) {
-            FaultRecord record = JSONObject.parseObject(message, FaultRecord.class);
-            System.out.println(record);
+            FaultRecord record = JSON.parseObject(message, FaultRecord.class);
             if (record.getResumeTime() == null) {
                 // 新故障记录
                 listener.faultOccured(record);
@@ -49,8 +51,7 @@ public class RealtimeDataMessageDelegate {
      * @param message
      */
     public void handleOffLimitsMessage(String message) throws IOException {
-        System.out.println("收到越限报警");
-        System.out.println(message);
+        log.warn("收到越限报警:{}", message);
         if (listener != null) {
             OffLimitsRecord record = JSONObject.parseObject(message, OffLimitsRecord.class);
             if (record.getResumeTime() == null) {
@@ -70,8 +71,7 @@ public class RealtimeDataMessageDelegate {
      * @param message
      */
     public void handleYxChangeMessage(String message) throws IOException {
-        System.out.println("收到遥信变位信息");
-        System.out.println(message);
+        log.info("收到遥信变位信息:{}", message);
         if (listener != null) {
             YxRecord record = JSONObject.parseObject(message, YxRecord.class);
             System.out.println(record);

@@ -66,7 +66,7 @@ public interface RealtimeDataService {
      * @param varName
      * @return
      */
-    float[] getEndTagVarYcArray(String code, String varName);
+    String getEndTagVarYcArray(String code, String varName);
 
     /**
      * 查询多个遥测数组实时数据, 返回结果可以为Null
@@ -75,5 +75,5 @@ public interface RealtimeDataService {
      * @param varName
      * @return
      */
-    Map<String, float[]> getEndTagVarYcArray(String code, List<String> varName);
+    Map<String, String> getEndTagVarYcArray(String code, List<String> varName);
 }

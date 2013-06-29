@@ -84,8 +84,7 @@ public class HistoryDataServiceImpl implements HistoryDataService {
         final String startTimestamp = LocalDateTime.fromDateFields(start).toString();
         final String endTimestamp = LocalDateTime.fromDateFields(end).toString();
 
-        KeyRange keyRange = new KeyRange(startTimestamp /*start*/, true /*startInclusive*/,
-                endTimestamp /*end*/, false /*endInclusive*/);
+        KeyRange keyRange = new KeyRange(startTimestamp /*start*/, true /*startInclusive*/, endTimestamp /*end*/, false /*endInclusive*/);
 
         final Map<Key, ValueVersion> results = store.multiGet(KeyDefinition.getVarGroupKey(code, varGroup.toString()), keyRange, Depth.CHILDREN_ONLY);
         for (Map.Entry<Key, ValueVersion> entry : results.entrySet()) {

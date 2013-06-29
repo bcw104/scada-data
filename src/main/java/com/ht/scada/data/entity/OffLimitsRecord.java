@@ -30,9 +30,11 @@ public class OffLimitsRecord  implements Persistable<String> {
     @Type(type = "org.hibernate.type.NumericBooleanType")
 	private Boolean type;// 越限类型 true:越上限，false:越下限
     @Column(name = "action_time")
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date actionTime;
 
     @Column(name = "resume_time", insertable = false)
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date resumeTime;
 
 	public OffLimitsRecord() {
@@ -136,8 +138,7 @@ public class OffLimitsRecord  implements Persistable<String> {
      *
      * @param id the id to set
      */
-    protected void setId(final String id) {
-
+    public void setId(final String id) {
         this.id = id;
     }
     /*

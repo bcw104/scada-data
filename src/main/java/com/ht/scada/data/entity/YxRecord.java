@@ -27,6 +27,7 @@ public class YxRecord implements Persistable<String> {
 	private String info;
     @Type(type = "org.hibernate.type.NumericBooleanType")
 	private Boolean value;
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date datetime;
 
 	public YxRecord() {
@@ -95,7 +96,7 @@ public class YxRecord implements Persistable<String> {
      *
      * @param id the id to set
      */
-    protected void setId(final String id) {
+    public void setId(final String id) {
 
         this.id = id;
     }

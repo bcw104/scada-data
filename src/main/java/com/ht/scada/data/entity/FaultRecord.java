@@ -28,8 +28,10 @@ public class FaultRecord implements Persistable<String> {
     @Type(type = "org.hibernate.type.NumericBooleanType")
 	private Boolean value;
     @Column(name = "action_time")
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date actionTime;
     @Column(name = "resume_time")
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date resumeTime;
 
 	public FaultRecord() {
@@ -114,7 +116,7 @@ public class FaultRecord implements Persistable<String> {
      *
      * @param id the id to set
      */
-    protected void setId(final String id) {
+    public void setId(final String id) {
 
         this.id = id;
     }

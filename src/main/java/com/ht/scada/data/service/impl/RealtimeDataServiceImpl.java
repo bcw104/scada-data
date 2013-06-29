@@ -81,39 +81,41 @@ public class RealtimeDataServiceImpl implements RealtimeDataService {
     }
 
     @Override
-    public float[] getEndTagVarYcArray(String code, String varName) {
+    public String getEndTagVarYcArray(String code, String varName) {
 
         String value = redisTemplate.<String, String>opsForHash().get(code + ":ARRAY", varName);
         if (value == null || value.isEmpty()) {
             return null;
         }
-        String[] data = value.split(",");
-        float [] ycArray = new float[data.length];
-        for (int i = 0; i < ycArray.length; i++) {
-            ycArray[i] = Float.parseFloat(data[i]);
-        }
-        return ycArray;  //To change body of implemented methods use File | Settings | File Templates.
+        return value;
+//        String[] data = value.split(",");
+//        float [] ycArray = new float[data.length];
+//        for (int i = 0; i < ycArray.length; i++) {
+//            ycArray[i] = Float.parseFloat(data[i]);
+//        }
+//        return ycArray;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Map<String, float[]> getEndTagVarYcArray(String code, List<String> varNames) {
+    public Map<String, String> getEndTagVarYcArray(String code, List<String> varNames) {
         List<String> value = redisTemplate.<String, String>opsForHash().multiGet(code + ":ARRAY", varNames);
         if (value == null || value.isEmpty()) {
             return null;
         }
 
-        Map<String, float[]> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         for (int i = 0; i < value.size(); i++) {
             String v = value.get(i);
             if (v != null) {
-                String[] data = v.split(",");
-                if (data.length > 0) {
-                    float [] ycArray = new float[data.length];
-                    for (int j = 0; j < ycArray.length; j++) {
-                        ycArray[j] = Float.parseFloat(data[i]);
-                    }
-                    map.put(varNames.get(i), ycArray);
-                }
+                map.put(varNames.get(i), v);
+//                String[] data = v.split(",");
+//                if (data.length > 0) {
+//                    float [] ycArray = new float[data.length];
+//                    for (int j = 0; j < ycArray.length; j++) {
+//                        ycArray[j] = Float.parseFloat(data[i]);
+//                    }
+//                    map.put(varNames.get(i), ycArray);
+//                }
             }
         }
         return map;  //To change body of implemented methods use File | Settings | File Templates.
