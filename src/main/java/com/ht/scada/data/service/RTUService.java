@@ -3,7 +3,7 @@ package com.ht.scada.data.service;
 import java.util.Map;
 
 /**
- * 实现对RTU的遥控遥调操作
+ * 实现对RTU的遥控遥调操作,目前支持JAX-RS, JAX-WS(即将支持)
  * @author 薄成文
  *
  */
@@ -41,5 +41,14 @@ public interface RTUService {
 	 */
 	boolean yt(String code, String varName, int value) throws Exception;
 
+    /**
+     *
+     * @param code
+     * @param value
+     * @return
+     * @throws Exception
+     * @deprecated 未实现该接口，请勿使用
+     */
+    @Deprecated
     boolean yt(String code, Map<String, Float> value) throws Exception;
 }
