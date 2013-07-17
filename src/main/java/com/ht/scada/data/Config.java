@@ -18,6 +18,8 @@ public enum Config {
 
     private PropertiesConfiguration config;
 
+    private String commUrl = "http://localhost:8080/comm/services/rs";
+
     /**
      * nosql数据库地址和端口
      */
@@ -32,6 +34,8 @@ public enum Config {
             config = new PropertiesConfiguration(Config.class.getResource("/config.properties").toURI().toURL());
             //config = new PropertiesConfiguration(configPath);
             config.setAutoSave(true);
+
+            commUrl = config.getString("commUrl");
 
             kvHostPort = config.getStringArray("kv.hostPort");
             kvStoreName = config.getString("kv.storeName");
@@ -67,4 +71,7 @@ public enum Config {
         config.setProperty("kv.storeName", kvStoreName);
     }
 
+    public String getCommUrl() {
+        return commUrl;
+    }
 }
