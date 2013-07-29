@@ -51,4 +51,11 @@ public interface RTUService {
      */
     @Deprecated
     boolean yt(String code, Map<String, Float> value) throws Exception;
+
+    /**
+     * 判断功图数据是否召唤完成, 用于手工召唤功图数据
+     * @param code
+     * @return
+     */
+    boolean isGTComplete(String code);
 }

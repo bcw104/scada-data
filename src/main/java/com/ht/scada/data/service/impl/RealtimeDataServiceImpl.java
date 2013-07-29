@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.*;
 
 /**
@@ -119,6 +120,11 @@ public class RealtimeDataServiceImpl implements RealtimeDataService {
             }
         }
         return map;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getEndTagManualGTDatetime(String code) {
+        return redisTemplate.opsForValue().get(code + ":MANUAL_GT");  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @PreDestroy

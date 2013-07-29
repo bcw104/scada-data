@@ -7,11 +7,12 @@ import com.ht.scada.data.service.RTUService;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import java.util.Map;
 
 @Service
@@ -20,8 +21,11 @@ public class RTUServiceImpl implements RTUService {
 
 
 //    private RealtimeDataService realtimeDataService;
-    @Autowired
+    @Inject
     private EndTagDao endTagDao;
+    @Inject
+    private StringRedisTemplate redisTemplate;
+
     private IMyResource commRs;
 
     public RTUServiceImpl() {
@@ -59,6 +63,18 @@ public class RTUServiceImpl implements RTUService {
     @Override
     public boolean yt(String code, Map<String, Float> value) throws Exception {
         throw new Exception("this method not implemented!");
+    }
+
+    @Override
+    public boolean isGTComplete(String code) {
+        //To change body of implemented methods use File | Settings | File Templates.
+        boolean completed =  "true".equals(redisTemplate.opsForValue().get(code+":GT"));
+        if (completed) {
+            redisTemplate.delete(code+":GT");
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

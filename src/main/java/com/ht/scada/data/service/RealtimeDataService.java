@@ -15,7 +15,6 @@ import java.util.Map;
  */
 public interface RealtimeDataService {
 
-
     List<String> getEndTagMultiVarValue(String code, List<String> name);
 
     /**
@@ -76,4 +75,6 @@ public interface RealtimeDataService {
      * @return
      */
     Map<String, String> getEndTagVarYcArray(String code, List<String> varName);
+
+    String getEndTagManualGTDatetime(String code);
 }
