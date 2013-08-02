@@ -35,7 +35,7 @@ public enum Config {
             //config = new PropertiesConfiguration(configPath);
             config.setAutoSave(true);
 
-            commUrl = config.getString("commUrl");
+            commUrl = config.getString("commUrl", commUrl);
 
             kvHostPort = config.getStringArray("kv.hostPort");
             kvStoreName = config.getString("kv.storeName");
