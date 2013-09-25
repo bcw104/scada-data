@@ -1,10 +1,13 @@
 package com.ht.scada.data.service.impl;
 
+import com.ht.scada.data.dao.FaultRecordDao;
+import com.ht.scada.data.dao.OffLimitsRecordDao;
 import com.ht.scada.data.entity.FaultRecord;
 import com.ht.scada.data.entity.OffLimitsRecord;
 import com.ht.scada.data.service.AlarmService;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -15,14 +18,30 @@ import java.util.List;
  */
 @Service
 public class AlarmServiceImpl implements AlarmService {
+
+    @Inject
+    private FaultRecordDao faultRecordDao;
+    @Inject
+    private OffLimitsRecordDao offLimitsRecordDao;
+
     @Override
-    public List<FaultRecord> getCurrentFaultRecord(String code) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public List<FaultRecord> getUnresolvedFaultRecord(int endId) {
+        return faultRecordDao.findByEndIdAndResumeTimeIsNull(endId);
     }
 
     @Override
-    public List<OffLimitsRecord> getCurrentOffLimitsRecord(String code) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public List<FaultRecord> getResolvedFaultRecord(int endId) {
+        return faultRecordDao.findByEndIdAndResumeTimeIsNotNull(endId);
+    }
+
+    @Override
+    public List<OffLimitsRecord> getUnresolvedOffLimitsRecord(int endId) {
+        return offLimitsRecordDao.findByEndIdAndResumeTimeIsNull(endId);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<OffLimitsRecord> getResolvedOffLimitsRecord(int endId) {
+        return offLimitsRecordDao.findByEndIdAndResumeTimeIsNotNull(endId);  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }

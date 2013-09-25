@@ -15,17 +15,19 @@ public interface AlarmService {
 	
 	/**
 	 * 返回当前的故障报警记录
-	 * @param code
+	 * @param endId
 	 * @return
 	 */
-	public List<FaultRecord> getCurrentFaultRecord(String code);
-	
+	public List<FaultRecord> getUnresolvedFaultRecord(int endId);
+
+    public List<FaultRecord> getResolvedFaultRecord(int endId);
+
 	/**
 	 * 返回当前的遥测越限报警记录
-	 * @param code
+	 * @param endId
 	 * @return
 	 */
-	public List<OffLimitsRecord> getCurrentOffLimitsRecord(String code);
-	
+	public List<OffLimitsRecord> getUnresolvedOffLimitsRecord(int endId);
+    public List<OffLimitsRecord> getResolvedOffLimitsRecord(int endId);
 
 }

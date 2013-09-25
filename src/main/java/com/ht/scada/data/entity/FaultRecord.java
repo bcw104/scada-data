@@ -22,6 +22,12 @@ public class FaultRecord implements Persistable<String> {
     @Column(length = 32)
     private String id;
 
+    @Column(name = "endId")
+    private Integer endId;
+    @Column(name = "endName")
+    private String endName;// 监控对象名称(回路名、井名)
+    @Column(name = "tagName")
+    private String tagName;
 	private String code;// 计量点编号(回路号、井号等)
 	private String name;// 变量名称
 	private String info;// 故障信息
@@ -37,8 +43,13 @@ public class FaultRecord implements Persistable<String> {
 	public FaultRecord() {
 	}
 	
-	public FaultRecord(String code, String name, String info, boolean value, Date actionTime) {
+	public FaultRecord(int endId, String endName, String code,
+                       String name, String tagName, String info, boolean value, Date actionTime) {
+        this.endId = endId;
+        this.endName= endName;
 		this.code = code;
+
+        this.tagName = tagName;
 		this.name = name;
 		this.info = info;
 		this.value = value;
@@ -52,8 +63,32 @@ public class FaultRecord implements Persistable<String> {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	
-	public String getName() {
+
+    public String getEndName() {
+        return endName;
+    }
+
+    public void setEndName(String endName) {
+        this.endName = endName;
+    }
+
+    public Integer getEndId() {
+        return endId;
+    }
+
+    public void setEndId(Integer endId) {
+        this.endId = endId;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
+    public String getName() {
 		return name;
 	}
 

@@ -1,5 +1,6 @@
 package com.ht.scada.data;
 
+import com.ht.db.Database;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
@@ -17,6 +18,7 @@ public enum Config {
     INSTANCE;
 
     private PropertiesConfiguration config;
+    private Database database;
 
     private String commUrl = "http://localhost:8080/comm/services/rs";
 
@@ -36,6 +38,7 @@ public enum Config {
             config.setAutoSave(true);
 
             commUrl = config.getString("commUrl", commUrl);
+            database = Database.valueOf(config.getString("database", Database.MYSQL.toString()));
 
             kvHostPort = config.getStringArray("kv.hostPort");
             kvStoreName = config.getString("kv.storeName");
@@ -73,5 +76,9 @@ public enum Config {
 
     public String getCommUrl() {
         return commUrl;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 }

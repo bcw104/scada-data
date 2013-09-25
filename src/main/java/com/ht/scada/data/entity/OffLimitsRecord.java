@@ -22,6 +22,12 @@ public class OffLimitsRecord  implements Persistable<String> {
     @Column(length = 32)
     private String id;
 
+    @Column(name = "endId")
+    private Integer endId;
+    @Column(name = "endName")
+    private String endName;// 监控对象名称(回路名、井名)
+    @Column(name = "tagName")
+    private String tagName;
 	private String code;// 计量点编号(回路号、井号等)
 	private String name;// 变量名称
 	private String info;// 报警信息
@@ -40,16 +46,29 @@ public class OffLimitsRecord  implements Persistable<String> {
 	public OffLimitsRecord() {
 	}
 
-	public OffLimitsRecord(String code, String name, String info, double value,
-			double threshold, boolean type, Date actionTime) {
-		this.code = code;
-		this.name = name;
-		this.info = info;
-		this.value = value;
-		this.threshold = threshold;
-		this.type = type;
-		this.actionTime = actionTime;
-	}
+    public Integer getEndId() {
+        return endId;
+    }
+
+    public void setEndId(Integer endId) {
+        this.endId = endId;
+    }
+
+    public String getEndName() {
+        return endName;
+    }
+
+    public void setEndName(String endName) {
+        this.endName = endName;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
 
     public String getCode() {
 		return code;

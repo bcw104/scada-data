@@ -10,7 +10,6 @@ import oracle.kv.*;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -22,7 +21,7 @@ import java.util.*;
  * @author: 薄成文 13-5-27 上午10:30
  * To change this template use File | Settings | File Templates.
  */
-@Service
+//@Service
 public class HistoryDataServiceImpl implements HistoryDataService {
     private static final Logger log = LoggerFactory.getLogger(HistoryDataServiceImpl.class);
 
