@@ -67,7 +67,13 @@ public class HistoryDataServiceImpl implements HistoryDataService {
             Float f = data.getYcValueMap().get(varName);
             if (f != null) {
                 list.add(new TimeSeriesDataModel(data.getDatetime(), f));
-            }
+            } else {
+                    Double d = data.getYmValueMap().get(varName);
+                    if (d != null) {
+                       
+                        list.add(new TimeSeriesDataModel(data.getDatetime(), d.floatValue()));
+                    }
+                }
         }
         return list;
     }
@@ -95,6 +101,12 @@ public class HistoryDataServiceImpl implements HistoryDataService {
                 if (f != null) {
                     List<TimeSeriesDataModel> list = map.get(varName);
                     list.add(new TimeSeriesDataModel(data.getDatetime(), f));
+                } else {
+                    Double d = data.getYmValueMap().get(varName);
+                    if (d != null) {
+                        List<TimeSeriesDataModel> list = map.get(varName);
+                        list.add(new TimeSeriesDataModel(data.getDatetime(), d.floatValue()));
+                    }
                 }
             }
         }

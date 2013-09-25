@@ -56,7 +56,7 @@
 
 
     <bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-          p:hostName="localhost" p:port="6379" p:password=""/>
+          p:hostName="192.168.1.220" p:port="6379" p:password=""/>
     <!-- Configurer that replaces ${...} placeholders with values from a properties file -->
     <!--<context:property-placeholder location="classpath*:/redis.properties"/>-->
 
